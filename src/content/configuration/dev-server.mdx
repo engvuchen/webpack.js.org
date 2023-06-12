@@ -21,21 +21,22 @@ contributors:
   - anikethsaha
   - snitin315
   - Biki-das
-  - SaulSilver
-  - malcolm-kee
+translators:
+  - jerexyz
+  - QC-L
 ---
 
-[webpack-dev-server](https://github.com/webpack/webpack-dev-server) can be used to quickly develop an application. See the [development guide](/guides/development/) to get started.
+[webpack-dev-server](https://github.com/webpack/webpack-dev-server) 可用于快速开发应用程序。请查阅 [开发指南](/guides/development/) 开始使用。
 
-This page describes the options that affect the behavior of webpack-dev-server (short: dev-server) <Badge text="version >= 4.0.0" />. Migration guide from `v3` to `v4` can be found [here](https://github.com/webpack/webpack-dev-server/blob/master/migration-v4.md).
+当前页面记录了影响 `webpack-dev-server` (简写: `dev-server`) <Badge text="version >= 4.0.0" /> 配置的选项。可以在 [这里](https://github.com/webpack/webpack-dev-server/blob/master/migration-v4.md) 找到 `v3` 到 `v4` 的迁移指南
 
-W> `webpack-dev-server v4.0.0+` requires `node >= v12.13.0`, `webpack >= v4.37.0` (but we recommend using `webpack >= v5.0.0`), and `webpack-cli >= v4.7.0`.
+W> `webpack-dev-server v4.0.0+` 要求 `node >= v12.13.0`、`webpack >= v4.37.0`（但是我们推荐使用 `webpack >= v5.0.0`）和 `webpack-cli >= v4.7.0`。
 
-## devServer
+## devServer $#devserver$
 
 `object`
 
-This set of options is picked up by [webpack-dev-server](https://github.com/webpack/webpack-dev-server) and can be used to change its behavior in various ways. Here's a rudimentary example that gzips and serves everything from our `public/` directory in the project root:
+通过 [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 的这些配置，能够以多种方式改变其行为。这是一个基本的示例，利用 `gzips` 压缩 `public/` 目录当中的所有内容并提供一个本地服务(serve)：
 
 **webpack.config.js**
 
@@ -54,7 +55,7 @@ module.exports = {
 };
 ```
 
-When the server is started, there will be a message prior to the list of resolved modules:
+当服务(`server`)启动后，在解析模块列表之前输出一条消息：
 
 ```bash
 <i> [webpack-dev-server] Project is running at:
@@ -64,41 +65,41 @@ When the server is started, there will be a message prior to the list of resolve
 <i> [webpack-dev-server] Content not from webpack is served from '/path/to/public' directory
 ```
 
-that will give some background on where the server is located and what it's serving.
+这里将会给出服务启动位置以及内容的一些基本信息。
 
-If you're using dev-server through the Node.js API, the options in `devServer` will be ignored. Pass the options as the first parameter instead: `new WebpackDevServer({...}, compiler)`. [See here](https://github.com/webpack/webpack-dev-server/tree/master/examples/api/simple) for an example of how to use webpack-dev-server through the Node.js API.
+如果你通过 Node.js API 使用 dev-server，则 `devServer` 中的配置选项将被忽略。但可以将配置选项作为第一个参数传入：`new WebpackDevServer({...}, compiler)`。[此示例](https://github.com/webpack/webpack-dev-server/tree/master/examples/api/simple)展示了如何通过 Node.js API 使用 webpack-dev-server。
 
-W> You cannot use the second `compiler` argument (a callback) when using `WebpackDevServer`.
+W> 使用 `WebpackDevServer` 时，不能使用第二个 `compiler` 参数（一个回调）。
 
-W> Be aware that when [exporting multiple configurations](/configuration/configuration-types/#exporting-multiple-configurations) only the `devServer` options for the first configuration will be taken into account and used for all the configurations in the array.
+W> 请注意，当[导出多个配置对象](/configuration/configuration-types/#exporting-multiple-configurations)时，只会使用 `devServer` 的第一个配置选项，并将其应用于所有的配置当中。
 
-T> If you're having trouble, navigating to the `/webpack-dev-server` route will show where files are served. For example, `http://localhost:9000/webpack-dev-server`.
+T> 如果你碰到了问题，请将路由导航至 `/webpack-dev-server` 将会为你展示服务文件的位置。例如： `http://localhost:9000/webpack-dev-server`。
 
-T> If you want to manually recompile the bundle, navigating to the `/webpack-dev-server/invalidate` route will [invalidate](/api/node/#invalidate-watching) the current compilation of the bundle and recompile it for you via [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware#invalidate). Depending on your configuration, the URL may look like `http://localhost:9000/webpack-dev-server/invalidate`.
+T> 如果你需要要手动重新编译 `bundle`，将路由导航至 `/webpack-dev-server/invalidate` 使当前编译的 `bundle` [无效](/api/node/#invalidate-watching)，并通过 [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware#invalidate) 为你重新编译。根据你的配置，URL 可能看起来像 `http://localhost:9000/webpack-dev-server/invalidate`。
 
-T> HTML template is required to serve the bundle, usually, it is an `index.html` file. Make sure that script references are added into HTML, webpack-dev-server doesn't inject them automatically.
+T> 当启动本地服务的时候 HTML 模板是必须提供的，通常是 `index.html`。确保将脚本引用添加到 HTML 中，webpack-dev-server 不会自动注入它们。
 
-### Usage via CLI
+### Usage via CLI $#usage-via-cli$
 
-You can invoke webpack-dev-server via CLI by:
+你可以通过 CLI 调用 webpack-dev-server，方式是：
 
 ```bash
 npx webpack serve
 ```
 
-A list of CLI options for `serve` is available [here](https://github.com/webpack/webpack-cli/blob/master/SERVE-OPTIONS-v4.md)
+CLI 配置项列表可以在 [这里](https://github.com/webpack/webpack-cli/blob/master/SERVE-OPTIONS-v4.md) 查询。
 
-### Usage via API
+### Usage via API $#usageviaapi$
 
-While it's recommended to run `webpack-dev-server` via the CLI, you may also choose to start a server via the API.
+虽然推荐通过 CLI 运行 `webpack-dev-server`，但是你也可以通过 API 来启用服务器。
 
-See the related [API documentation for `webpack-dev-server`](/api/webpack-dev-server/).
+查看相关的 [`webpack-dev-server` API 文档](/api/webpack-dev-server/)。
 
-## devServer.allowedHosts
+## devServer.allowedHosts $#devserverallowedhosts$
 
 `'auto' | 'all'` `[string]`
 
-This option allows you to allowlist services that are allowed to access the dev server.
+该选项允许将允许访问开发服务器的服务列入白名单。
 
 **webpack.config.js**
 
@@ -116,7 +117,7 @@ module.exports = {
 };
 ```
 
-Mimicking Django's `ALLOWED_HOSTS`, a value beginning with `.` can be used as a subdomain wildcard. `.host.com` will match `host.com`, `www.host.com`, and any other subdomain of `host.com`.
+模仿 django 的`ALLOWED_HOSTS`，用 `.` 作为子域通配符。`.host.com` 会与 `host.com`，`www.host.com` 以及 `host.com` 等其他任何其他子域匹配。
 
 **webpack.config.js**
 
@@ -132,13 +133,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --allowed-hosts .host.com --allowed-hosts host2.com
 ```
 
-When set to `'all'` this option bypasses host checking. **THIS IS NOT RECOMMENDED** as apps that do not check the host are vulnerable to DNS rebinding attacks.
+当设置为 `'all'` 时会跳过 host 检查。**并不推荐这样做**，因为不检查 host 的应用程序容易受到 DNS 重绑定攻击。
 
 **webpack.config.js**
 
@@ -151,13 +152,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --allowed-hosts all
 ```
 
-When set to `'auto'` this option always allows `localhost`, [`host`](#devserverhost), and [`client.webSocketURL.hostname`](#websocketurl):
+当设置为 `'auto'` 时，此配置项总是允许 `localhost`、 [`host`](#devserverhost) 和 [`client.webSocketURL.hostname`](#websocketurl)：
 
 **webpack.config.js**
 
@@ -170,17 +171,17 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --allowed-hosts auto
 ```
 
-## devServer.bonjour
+## devServer.bonjour $#devserverbonjour$
 
 `boolean = false` `object`
 
-This option broadcasts the server via [ZeroConf](http://www.zeroconf.org/) networking on start.
+这个配置用于在启动时通过 [ZeroConf](http://www.zeroconf.org/) 网络广播你的开发服务器。
 
 **webpack.config.js**
 
@@ -193,19 +194,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --bonjour
 ```
 
-To disable:
+如需禁用：
 
 ```bash
 npx webpack serve --no-bonjour
 ```
 
-You can also pass [custom options](https://github.com/watson/bonjour#initializing) to bonjour, for example:
+你也可以为 bonjour 设置 [自定义配置项](https://github.com/watson/bonjour#initializing)，例如：
 
 **webpack.config.js**
 
@@ -221,13 +222,13 @@ module.exports = {
 };
 ```
 
-## devServer.client
+## devServer.client $#devserverclient$
 
-### logging
+### logging $#logging$
 
 `'log' | 'info' | 'warn' | 'error' | 'none' | 'verbose'`
 
-Allows to set log level in the browser, e.g. before reloading, before an error or when [Hot Module Replacement](/concepts/hot-module-replacement/) is enabled.
+允许在浏览器中设置日志级别，例如在重载之前，在一个错误之前或者 [热模块替换](/concepts/hot-module-replacement/) 启用时。
 
 **webpack.config.js**
 
@@ -242,17 +243,17 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --client-logging info
 ```
 
-### overlay
+### overlay $#overlay$
 
-`boolean = true` `object`
+`boolean = true` `object: { errors boolean = true, warnings boolean = true }`
 
-Shows a full-screen overlay in the browser when there are compiler errors or warnings.
+当出现编译错误或警告时，在浏览器中显示全屏覆盖。
 
 **webpack.config.js**
 
@@ -267,29 +268,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --client-overlay
 ```
 
-To disable:
+如需禁用：
 
 ```bash
 npx webpack serve --no-client-overlay
 ```
 
-You can provide an object with the following properties for more granular control:
-
-| Property        | Explanation              |
-| --------------- | ------------------------ |
-| `errors`        | compilation errors       |
-| `runtimeErrors` | unhandled runtime errors |
-| `warnings`      | compilation warnings     |
-
-All properties are optional and default to `true` when not provided.
-
-For example, to disable compilation warnings, you can provide the following configuration:
+如果你只想显示错误信息：
 
 **webpack.config.js**
 
@@ -301,50 +292,23 @@ module.exports = {
       overlay: {
         errors: true,
         warnings: false,
-        runtimeErrors: true,
       },
     },
   },
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
-npx webpack serve --client-overlay-errors --no-client-overlay-warnings --client-overlay-runtime-errors
+npx webpack serve --client-overlay-errors --no-client-overlay-warnings
 ```
 
-To filter based on the thrown error, you can pass a function that accepts an `error` parameter and returns a boolean.
-
-For example, to ignore errors thrown by [`AbortController.abort()`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort):
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  devServer: {
-    client: {
-      overlay: {
-        runtimeErrors: (error) => {
-          if (error instanceof DOMException && error.name === 'AbortError') {
-            return false;
-          }
-          return true;
-        },
-      },
-    },
-  },
-};
-```
-
-W> The function will not have access to the variables declared in the outer scope within the configuration file.
-
-### progress
+### progress $#progress$
 
 `boolean`
 
-Prints compilation progress in percentage in the browser.
+在浏览器中以百分比显示编译进度。
 
 **webpack.config.js**
 
@@ -359,25 +323,25 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --client-progress
 ```
 
-To disable:
+如需禁用：
 
 ```bash
 npx webpack serve --no-client-progress
 ```
 
-### reconnect
+### reconnect $#reconnect$
 
 `boolean = true` `number`
 
 <Badge text="v4.4.0+" />
 
-Tells dev-server the number of times it should try to reconnect the client. When `true` it will try to reconnect unlimited times.
+告诉 dev-server 它应该尝试重新连接客户端的次数。当为 `true` 时，它将无限次尝试重新连接。
 
 **webpack.config.js**
 
@@ -392,13 +356,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --client-reconnect
 ```
 
-When set to `false` it will not try to reconnect.
+当设置为 `false` 时，它将不会尝试连接。
 
 ```javascript
 module.exports = {
@@ -411,13 +375,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --no-client-reconnect
 ```
 
-You can also specify the exact number of times the client should try to reconnect.
+您还可以指定客户端应该尝试重新连接的确切次数。
 
 ```javascript
 module.exports = {
@@ -430,19 +394,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --client-reconnect 5
 ```
 
-### webSocketTransport
+### webSocketTransport $#websockettransport$
 
 `'ws' | 'sockjs'` `string`
 
-This option allows us either to choose the current `devServer` transport mode for clients individually or to provide custom client implementation. This allows specifying how the browser or other client communicates with the `devServer`.
+该配置项允许我们为客户端单独选择当前的 `devServer` 传输模式，或者提供自定义的客户端实现。这允许指定浏览器或其他客户端与 `devServer` 的通信方式。
 
-T> Providing `'ws'` or `'sockjs'` to [`webSocketServer`](#devserverwebsocketserver) is a shortcut to setting both `devServer.client.webSocketTransport` and `devServer.webSocketServer` to the given value.
+T> 为 [`webSocketServer`](#devserverwebsocketserver) 设置 `'ws'` 或者 `'sockjs'` 是一个设置 `devServer.client.webSocketTransport` 和 `devServer.webSocketServer` 的快捷方式。
 
 **webpack.config.js**
 
@@ -458,17 +422,17 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --client-web-socket-transport ws --web-socket-server ws
 ```
 
-T> When providing a custom client and server implementation make sure that they are compatible with one another to communicate successfully.
+T> 在提供自定义客户端和服务器实现时，要确保它们彼此兼容，以成功通信。
 
-To create a custom client implementation, create a class that extends [`BaseClient`](https://github.com/webpack/webpack-dev-server/blob/master/client-src/clients/BaseClient.js).
+创建一个自定义客户端实现，创建一个类拓展 [`BaseClient`](https://github.com/webpack/webpack-dev-server/blob/master/client-src/clients/BaseClient.js)。
 
-Using path to `CustomClient.js`, a custom WebSocket client implementation, along with the compatible `'ws'` server:
+使用 `CustomClient.js` 的路径，一个自定义 WebSocket 客户端实现，连同兼容的 `'ws'` 服务器：
 
 **webpack.config.js**
 
@@ -484,7 +448,7 @@ module.exports = {
 };
 ```
 
-Using custom, compatible WebSocket client and server implementations:
+使用自定义且兼容的 WebSocket 客户端和服务端实现：
 
 **webpack.config.js**
 
@@ -500,11 +464,11 @@ module.exports = {
 };
 ```
 
-### webSocketURL
+### webSocketURL $#websocketurl$
 
 `string` `object`
 
-This option allows specifying URL to web socket server (useful when you're proxying dev server and client script does not always know where to connect to).
+这个选项允许指定 URL 到 web socket 服务器（当你代理开发服务器和客户端脚本不总是知道连接到哪里时很有用）。
 
 **webpack.config.js**
 
@@ -519,20 +483,20 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --client-web-socket-url ws://0.0.0.0:8080/ws
 ```
 
-You can also specify an object with the following properties:
+您还可以指定具有以下属性的对象：
 
-- `hostname`: Tells clients connected to devServer to use the provided hostname.
-- `pathname`: Tells clients connected to devServer to use the provided path to connect.
-- `password`: Tells clients connected to devServer to use the provided password to authenticate.
-- `port`: Tells clients connected to devServer to use the provided port.
-- `protocol`: Tells clients connected to devServer to use the provided protocol.
-- `username`: Tells clients connected to devServer to use the provided username to authenticate.
+- `hostname`: 告诉连接到 devServer 的客户端使用提供的 hostname 进行连接。
+- `pathname`: 告诉连接到 devServer 的客户端使用提供的路径进行连接。
+- `password`: 告诉连接到 devServer 的客户端使用提供的密码进行认证。
+- `port`: 告诉连接到 devServer 的客户端使用提供的端口进行连接。
+- `protocol`: 告诉连接到 devServer 的客户端使用提供的协议进行连接。
+- `username`: 告诉连接到 devServer 的客户端使用提供的用户名进行认证。
 
 **webpack.config.js**
 
@@ -554,13 +518,13 @@ module.exports = {
 };
 ```
 
-T> To get `protocol`/`hostname`/`port` from browser use `webSocketURL: 'auto://0.0.0.0:0/ws'`.
+T> 要从浏览器中获取 `protocol`/`hostname`/`port`，请使用 `webSocketURL: 'auto://0.0.0.0:0/ws'`。
 
-## devServer.compress
+## devServer.compress $#devservercompress$
 
 `boolean = true`
 
-Enable [gzip compression](https://betterexplained.com/articles/how-to-optimize-your-site-with-gzip-compression/) for everything served:
+启用 [gzip compression](https://betterexplained.com/articles/how-to-optimize-your-site-with-gzip-compression/)：
 
 **webpack.config.js**
 
@@ -573,23 +537,23 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --compress
 ```
 
-To disable:
+如需禁用
 
 ```bash
 npx webpack serve --no-compress
 ```
 
-## devServer.devMiddleware
+## devServer.devMiddleware $#devserverdevmiddleware$
 
 `object`
 
-Provide options to [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) which handles webpack assets.
+为 [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) 提供处理 webpack 资源的配置项。
 
 **webpack.config.js**
 
@@ -607,13 +571,13 @@ module.exports = {
 };
 ```
 
-## devServer.http2
+## devServer.http2 $#devserverhttp2$
 
 `boolean`
 
-Serve over HTTP/2 using [spdy](https://www.npmjs.com/package/spdy). This option is ignored for Node 15.0.0 and above, as spdy is broken for those versions. The dev server will migrate over to Node's built-in HTTP/2 once [Express](https://expressjs.com/) supports it.
+使用 [spdy](https://www.npmjs.com/package/spdy) 提供 HTTP/2 服务。对于 Node 15.0.0 及更高版本，此选项将被忽略，因为 spdy 在这些版本中已被破坏。一旦 [Express](https://expressjs.com/) 支持，开发服务器将迁移到 Node 内置的 HTTP/2。
 
-HTTP/2 with a self-signed certificate:
+HTTP/2 带有自签名证书：
 
 **webpack.config.js**
 
@@ -626,19 +590,19 @@ module.exports = {
 };
 ```
 
-Usage via CLI
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --http2
 ```
 
-To disable:
+禁用：
 
 ```bash
 npx webpack serve --no-http2
 ```
 
-Provide your own certificate using the [https](#devserverhttps) option:
+通过 [https](#devserverhttps) 配置你自己的证书文件：
 
 **webpack.config.js**
 
@@ -658,19 +622,19 @@ module.exports = {
 };
 ```
 
-To pass your certificate via CLI, use the following options:
+要通过 CLI 使用你的证书，请使用以下配置项：
 
 ```bash
 npx webpack serve --http2 --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-ca ./path/to/ca.pem
 ```
 
-W> This option is deprecated in favor of the [devServer.server](#devserverserver) option.
+W> 此配置项已被弃用，以支持 [devServer.server](#devserverserver)。
 
-## devServer.https
+## devServer.https $#devserverhttps$
 
 `boolean` `object`
 
-By default, dev-server will be served over `HTTP`. It can optionally be served over `HTTPS`:
+默认情况下，开发服务器将通过 HTTP 提供服务。可以选择使用 HTTPS 提供服务：
 
 **webpack.config.js**
 
@@ -683,19 +647,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --https
 ```
 
-To disable:
+禁用：
 
 ```bash
 npx webpack serve --no-https
 ```
 
-With the above setting, a self-signed certificate is used, but you can provide your own:
+根据上述配置，将使用自签名证书，但是你也可以提供自己的证书：
 
 **webpack.config.js**
 
@@ -714,15 +678,15 @@ module.exports = {
 };
 ```
 
-This object is passed straight to the Node.js HTTPS module, so see the [HTTPS documentation](https://nodejs.org/api/https.html) for more information.
+该对象直接传递到 Node.js HTTPS 模块，因此请参阅 [HTTPS documentation](https://nodejs.org/api/https.html) 以获取更多信息。
 
-To pass your own certificate via the CLI use the following options:
+要通过 CLI 使用自己的证书，请使用以下选项：
 
 ```bash
 npx webpack serve --https-request-cert --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-ca ./path/to/ca.pem --https-pfx ./path/to/server.pfx --https-passphrase webpack-dev-server
 ```
 
-`webpack-dev-server >= v4.2.0` allows you to set additional [TLS options](https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options) like `minVersion`. Also, you can directly pass the contents of respective files:
+`webpack-dev-server >= v4.2.0` 允许你设置额外的 [TLS 配置项](https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options)，比如 `minVersion`。同样你可以直接传递各自文件的内容：
 
 **webpack.config.js**
 
@@ -745,15 +709,15 @@ module.exports = {
 };
 ```
 
-W> Don't specify `https.ca` and `https.cacert` options together, if specified `https.ca` will be used. `https.cacert` is deprecated and will be removed in the next major release.
+W> 不要同时指定 `https.ca` 与 `https.cacert` 配置项，如果指定的话将会使用 `https.ca`。`https.cacert` 已弃用并且将会在下个主要版本中被移除。
 
-W> This option is deprecated in favor of the [devServer.server](#devserverserver) option.
+W> 该配置项已弃用，以支持 [devServer.server](#devserverserver)。
 
-## devServer.headers
+## devServer.headers $#devserverheaders$
 
 `array` `function` `object`
 
-Adds headers to all responses:
+为所有响应添加 headers：
 
 **webpack.config.js**
 
@@ -768,7 +732,7 @@ module.exports = {
 };
 ```
 
-You can also pass an array:
+你也可以传递一个数组：
 
 **webpack.config.js**
 
@@ -790,7 +754,7 @@ module.exports = {
 };
 ```
 
-You can also pass a function:
+你也可以传递一个函数：
 
 ```javascript
 module.exports = {
@@ -803,7 +767,7 @@ module.exports = {
 };
 ```
 
-## devServer.historyApiFallback
+## devServer.historyApiFallback $#devserverhistoryapifallback$
 
 `boolean = false` `object`
 
@@ -820,19 +784,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --history-api-fallback
 ```
 
-To disable:
+禁用：
 
 ```bash
 npx webpack serve --no-history-api-fallback
 ```
 
-By providing an object this behavior can be controlled further using options like `rewrites`:
+通过提供一个对象，这种行为可以通过像 `rewrites` 这样的配置项进一步控制：
 
 **webpack.config.js**
 
@@ -851,7 +815,7 @@ module.exports = {
 };
 ```
 
-When using dots in your path (common with Angular), you may need to use the `disableDotRule`:
+在你的路径中使用点（与 Angular 相同），你可能需要使用 `disableDotRule`：
 
 **webpack.config.js**
 
@@ -868,11 +832,11 @@ module.exports = {
 
 For more options and information, see the [connect-history-api-fallback](https://github.com/bripkens/connect-history-api-fallback) documentation.
 
-## devServer.host
+## devServer.host $#devserverhost$
 
 `'local-ip' | 'local-ipv4' | 'local-ipv6'` `string`
 
-Specify a host to use. If you want your server to be accessible externally, specify it like this:
+指定要使用的 host。如果你想让你的服务器可以被外部访问，像这样指定：
 
 **webpack.config.js**
 
@@ -885,19 +849,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --host 0.0.0.0
 ```
 
-This also works with IPv6:
+这也适用于 IPv6：
 
 ```bash
 npx webpack serve --host ::
 ```
 
-### local-ip
+### local-ip $#localip$
 
 Specifying `local-ip` as host will try to resolve the host option as your local `IPv4` address if available, if `IPv4` is not available it will try to resolve your local `IPv6` address.
 
@@ -915,17 +879,17 @@ npx webpack serve --host local-ipv4
 
 ### local-ipv6
 
-Specifying local-ipv6 as host will try to resolve the host option as your local IPv6 address.
+指定 local-ipv6 作为主机将尝试将主机选项解析为您的本地 IPv6 地址。
 
 ```bash
 npx webpack serve --host local-ipv6
 ```
 
-## devServer.hot
+## devServer.hot $#devserverhot$
 
 `'only'` `boolean = true`
 
-Enable webpack's [Hot Module Replacement](/concepts/hot-module-replacement/) feature:
+启用 webpack 的 [热模块替换](/concepts/hot-module-replacement/) 特性：
 
 **webpack.config.js**
 
@@ -938,19 +902,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --hot
 ```
 
-To disable:
+如需禁用：
 
 ```bash
 npx webpack serve --no-hot
 ```
 
-To enable Hot Module Replacement without page refresh as a fallback in case of build failures, use `hot: 'only'`:
+启用热模块替换功能，在构建失败时不刷新页面作为回退，使用 `hot: 'only'`：
 
 **webpack.config.js**
 
@@ -963,21 +927,21 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --hot only
 ```
 
-T> Since webpack-dev-server v4, HMR is enabled by default. It automatically applies [`webpack.HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin/) which is required to enable HMR. So you don't have to add this plugin to your `webpack.config.js` when `hot` is set to `true` in config or via the CLI option `--hot`. See the [HMR concepts page](/concepts/hot-module-replacement/) for more information.
+T> 从 webpack-dev-server v4 开始，HMR 是默认启用的。它会自动应用 [`webpack.HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin/)，这是启用 HMR 所必需的。因此当 `hot` 设置为 `true` 或者通过 CLI 设置 `--hot`，你不需要在你的 `webpack.config.js` 添加该插件。查看 [HMR concepts page](/concepts/hot-module-replacement/) 以获取更多信息。
 
-## devServer.ipc
+## devServer.ipc $#devserveripc$
 
 `true` `string`
 
 The Unix socket to listen to (instead of a [`host`](#devserverhost)).
 
-Setting it to `true` will listen to a socket at `/your-os-temp-dir/webpack-dev-server.sock`:
+将其设置为 `true` 将会监听 `/your-os-temp-dir/webpack-dev-server.sock` 的 socket：
 
 **webpack.config.js**
 
@@ -990,13 +954,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --ipc
 ```
 
-You can also listen to a different socket with:
+你也可以这样监听一个不同的 socket：
 
 **webpack.config.js**
 
@@ -1011,11 +975,11 @@ module.exports = {
 };
 ```
 
-## devServer.liveReload
+## devServer.liveReload $#devserverlivereload$
 
 `boolean = true`
 
-By default, the dev-server will reload/refresh the page when file changes are detected. [`devServer.hot`](#devserverhot) option must be disabled or [`devServer.watchFiles`](#devserverwatchfiles) option must be enabled in order for `liveReload` to take effect. Disable `devServer.liveReload` by setting it to `false`:
+默认情况下，当监听到文件变化时 dev-server 将会重新加载或刷新页面。为了 `liveReload` 能够生效，[`devServer.hot`](#devserverhot) 配置项必须禁用或者 [`devServer.watchFiles`](#devserverwatchfiles) 配置项必须启用。将其设置为 `false` 以禁用 `devServer.liveReload`：
 
 **webpack.config.js**
 
@@ -1028,21 +992,21 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --live-reload
 ```
 
-To disable:
+禁用该功能：
 
 ```bash
 npx webpack serve --no-live-reload
 ```
 
-W> Live reloading works only with web related [targets](/configuration/target/#string) like `web`, `webworker`, `electron-renderer` and `node-webkit`.
+W> 热加载仅对像 `web`、`webworker`、`electron-renderer` 和 `node-webkit` 的 [targets](/configuration/target/#string) 生效。
 
-## devServer.magicHtml
+## devServer.magicHtml $#devservermagichtml$
 
 `boolean = true`
 
@@ -1061,24 +1025,24 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --magic-html
 ```
 
-To disable:
+禁用：
 
 ```bash
 npx webpack serve --no-magic-html
 ```
 
-## devServer.onAfterSetupMiddleware
+## devServer.onAfterSetupMiddleware $#devserveronaftersetupmiddleware$
 
 `function (devServer)`
 
-Provides the ability to execute custom middleware after all other middleware
-internally within the server.
+提供服务器内部在所有其他中间件之后执行
+自定义中间件的能力
 
 **webpack.config.js**
 
@@ -1099,15 +1063,15 @@ module.exports = {
 };
 ```
 
-W> This option is deprecated in favor of the [devServer.setupMiddlewares](#devserversetupmiddlewares) option.
+W> 该配置项已弃用，以支持 [devServer.setupMiddlewares](#devserversetupmiddlewares)。
 
-## devServer.onBeforeSetupMiddleware
+## devServer.onBeforeSetupMiddleware $#devserveronbeforesetupmiddleware$
 
 `function (devServer)`
 
-Provides the ability to execute custom middleware prior to all other middleware
-internally within the server. This could be used to define custom handlers, for
-example:
+提供在服务器内部执行所有其他中间件之前执行自定义中间件的能力。
+这可以用来定义自定义处理程序，
+例如:
 
 **webpack.config.js**
 
@@ -1128,13 +1092,13 @@ module.exports = {
 };
 ```
 
-W> This option is deprecated in favor of the [devServer.setupMiddlewares](#devserversetupmiddlewares) option.
+W> 该配置项已弃用，以支持 [devServer.setupMiddlewares](#devserversetupmiddlewares)。
 
-## devserver.onListening
+## devserver.onListening $#devserveronlistening$
 
 `function (devServer)`
 
-Provides the ability to execute a custom function when webpack-dev-server starts listening for connections on a port.
+提供在 webpack-dev-server 开始监听端口连接时执行自定义函数的能力。
 
 **webpack.config.js**
 
@@ -1154,11 +1118,11 @@ module.exports = {
 };
 ```
 
-## devServer.open
+## devServer.open $#devserveropen$
 
 `boolean` `string` `object` `[string, object]`
 
-Tells dev-server to open the browser after server had been started. Set it to `true` to open your default browser.
+告诉 dev-server 在服务器已经启动后打开浏览器。设置其为 `true` 以打开你的默认浏览器。
 
 **webpack.config.js**
 
@@ -1171,19 +1135,19 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --open
 ```
 
-To disable:
+如需禁用：
 
 ```bash
 npx webpack serve --no-open
 ```
 
-To open a specified page in a browser:
+在浏览器中打开指定页面：
 
 **webpack.config.js**
 
@@ -1196,13 +1160,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --open /my-page
 ```
 
-To open multiple specified pages in browser:
+在浏览器中打开多个指定页面：
 
 **webpack.config.js**
 
@@ -1215,13 +1179,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --open /my-page --open /another-page
 ```
 
-Provide browser name to use instead of the default one:
+提供要使用的浏览器名称，而不是默认名称：
 
 **webpack.config.js**
 
@@ -1238,13 +1202,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --open-app-name 'google-chrome'
 ```
 
-The object accepts all [open](https://www.npmjs.com/package/open) options:
+该对象接收所有 [open](https://www.npmjs.com/package/open) 配置项：
 
 **webpack.config.js**
 
@@ -1263,13 +1227,13 @@ module.exports = {
 };
 ```
 
-T> The browser application name is platform-dependent. Don't hard code it in reusable modules. For example, `'Chrome'` is `'Google Chrome'` on macOS, `'google-chrome'` on Linux, and `'chrome'` on Windows.
+T> 浏览器应用程序名称与平台相关。不要在可重用模块中硬编码它。例如，`'Chrome'` 在 macOS 是 `'Google Chrome'`，在 Linux 是 `'google-chrome'`，在 Windows 是 `'chrome'`。
 
-## devServer.port
+## devServer.port $#devserverport$
 
 `'auto'` `string` `number`
 
-Specify a port number to listen for requests on:
+指定监听请求的端口号：
 
 **webpack.config.js**
 
@@ -1282,13 +1246,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过命令行使用：
 
 ```bash
 npx webpack serve --port 8080
 ```
 
-`port` option can't be `null` or an empty string, to automatically use a free port please use `port: 'auto'`:
+`port` 配置项不能设置为 `null` 或者空字符串，要想自动使用一个可用端口请使用 `port: 'auto'`：
 
 **webpack.config.js**
 
@@ -1301,21 +1265,21 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --port auto
 ```
 
-## devServer.proxy
+## devServer.proxy $#devserverproxy$
 
 `object` `[object, function]`
 
-Proxying some URLs can be useful when you have a separate API backend development server and you want to send API requests on the same domain.
+当拥有单独的 API 后端开发服务器并且希望在同一域上发送 API 请求时，代理某些 URL 可能会很有用。
 
-The dev-server makes use of the powerful [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) package. Check out its [documentation](https://github.com/chimurai/http-proxy-middleware#options) for more advanced usages. Note that some of `http-proxy-middleware`'s features do not require a `target` key, e.g. its `router` feature, but you will still need to include a `target` key in your configuration here, otherwise `webpack-dev-server` won't pass it along to `http-proxy-middleware`.
+开发服务器使用功能强大的 [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) 软件包。 查看其 [documentation](https://github.com/chimurai/http-proxy-middleware#options) 了解更多高级用法。 请注意，`http-proxy-middleware` 的某些功能不需要`target`键，例如 它的 `router` 功能，但是仍然需要在此处的配置中包含`target`，否则`webpack-dev-server` 不会将其传递给 `http-proxy-middleware`。
 
-With a backend on `localhost:3000`, you can use this to enable proxying:
+使用后端在 `localhost:3000` 上，可以使用它来启用代理：
 
 **webpack.config.js**
 
@@ -1330,9 +1294,9 @@ module.exports = {
 };
 ```
 
-A request to `/api/users` will now proxy the request to `http://localhost:3000/api/users`.
+现在，对 `/api/users` 的请求会将请求代理到 `http://localhost:3000/api/users`。
 
-If you don't want `/api` to be passed along, we need to rewrite the path:
+如果不希望传递`/api`，则需要重写路径：
 
 **webpack.config.js**
 
@@ -1350,7 +1314,7 @@ module.exports = {
 };
 ```
 
-A backend server running on HTTPS with an invalid certificate will not be accepted by default. If you want to, modify your configuration like this:
+默认情况下，将不接受在 HTTPS 上运行且证书无效的后端服务器。 如果需要，可以这样修改配置：
 
 **webpack.config.js**
 
@@ -1368,15 +1332,15 @@ module.exports = {
 };
 ```
 
-Sometimes you don't want to proxy everything. It is possible to bypass the proxy based on the return value of a function.
+有时不想代理所有内容。 可以基于函数的返回值绕过代理。
 
-In the function, you get access to the request, response, and proxy options.
+在该功能中，可以访问请求，响应和代理选项。
 
-- Return `null` or `undefined` to continue processing the request with proxy.
-- Return `false` to produce a 404 error for the request.
-- Return a path to serve from, instead of continuing to proxy the request.
+- 返回 `null` 或 `undefined` 以继续使用代理处理请求。
+- 返回 `false` 会为请求产生 404 错误。
+- 返回提供服务的路径，而不是继续代理请求。
 
-E.g. for a browser request, you want to serve an HTML page, but for an API request, you want to proxy it. You could do something like this:
+例如。 对于浏览器请求，想要提供 HTML 页面，但是对于 API 请求，想要代理它。 可以执行以下操作：
 
 **webpack.config.js**
 
@@ -1399,7 +1363,7 @@ module.exports = {
 };
 ```
 
-If you want to proxy multiple, specific paths to the same target, you can use an array of one or more objects with a `context` property:
+如果想将多个特定路径代理到同一目标，则可以使用一个或多个带有 `context` 属性的对象的数组：
 
 **webpack.config.js**
 
@@ -1417,7 +1381,7 @@ module.exports = {
 };
 ```
 
-Note that requests to root won't be proxied by default. To enable root proxying, the [`devMiddleware.index`](#devserverdevmiddleware) option should be specified as a falsy value:
+请注意，默认情况下不会代理对 root 的请求。 要启用根代理，应将 [`devMiddleware.index`](#devserverdevmiddleware) 选项指定为虚假值：
 
 **webpack.config.js**
 
@@ -1436,7 +1400,7 @@ module.exports = {
 };
 ```
 
-The origin of the host header is kept when proxying by default, you can set `changeOrigin` to `true` to override this behaviour. It is useful in some cases like using [name-based virtual hosted sites](https://en.wikipedia.org/wiki/Virtual_hosting#Name-based).
+默认情况下，代理时会保留主机头的来源，可以将 `changeOrigin` 设置为 `true` 以覆盖此行为。 在某些情况下，例如使用 [name-based virtual hosted sites](https://en.wikipedia.org/wiki/Virtual_hosting#Name-based)，它很有用。
 
 **webpack.config.js**
 
@@ -1454,13 +1418,13 @@ module.exports = {
 };
 ```
 
-## devServer.server
+## devServer.server $#devserverserver$
 
 `'http' | 'https' | 'spdy'` `string` `object`
 
 <Badge text="v4.4.0+" />
 
-Allows to set server and options (by default 'http').
+允许设置服务器和配置项（默认为 'http'）。
 
 **webpack.config.js**
 
@@ -1473,13 +1437,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --server-type http
 ```
 
-To serve over `HTTPS` with a self-signed certificate:
+使用自签名证书通过 `HTTPS` 提供服务：
 
 **webpack.config.js**
 
@@ -1492,13 +1456,13 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --server-type https
 ```
 
-To serve over `HTTP/2` using [spdy](https://www.npmjs.com/package/spdy) with a self-signed certificate:
+使用 [spdy](https://www.npmjs.com/package/spdy) 使用自签名证书通过 `HTTP/2` 提供服务：
 
 **webpack.config.js**
 
@@ -1511,15 +1475,15 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --server-type spdy
 ```
 
-W> This option is ignored for Node 15.0.0 and above, as [spdy is broken for those versions](https://github.com/spdy-http2/node-spdy/issues/380). The dev server will migrate over to Node's built-in HTTP/2 once [Express](https://expressjs.com/) supports it.
+W> 该配置项在 Node 15.0.0 及以上的版本会被忽略，因为 [spdy 在这些版本中不会正常工作](https://github.com/spdy-http2/node-spdy/issues/380)。一旦 [Express](https://expressjs.com/) 支持 Node 内建 HTTP/2，dev server 会进行迁移。
 
-Use the object syntax to provide your own certificate:
+使用对象语法提供自己的证书：
 
 **webpack.config.js**
 
@@ -1542,7 +1506,7 @@ module.exports = {
 };
 ```
 
-Usage via the CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --server-type https --server-options-key ./path/to/server.key --server-options-cert ./path/to/server.crt --server-options-ca ./path/to/ca.pem --server-options-passphrase webpack-dev-server
@@ -1575,13 +1539,13 @@ module.exports = {
 };
 ```
 
-W> Don't specify `server.options.ca` and `server.options.cacert` options together, if specified `server.options.ca` will be used. `server.options.cacert` is deprecated and will be removed in the next major release.
+W> 如果指定的 `server.options.ca` 将会被使用的话，不要同时指定 `server.options.ca` 与 `server.options.cacert` 配置项。`server.options.cacert` 已弃用并且会在下一个大版本中移除。
 
-## devServer.setupExitSignals
+## devServer.setupExitSignals $#devserversetupexitsignals$
 
 `boolean = true`
 
-Allows to close dev server and exit the process on `SIGINT` and `SIGTERM` signals.
+允许在 `SIGINT` 和 `SIGTERM` 信号时关闭开发服务器和退出进程。
 
 **webpack.config.js**
 
@@ -1594,13 +1558,13 @@ module.exports = {
 };
 ```
 
-## devServer.setupMiddlewares
+## devServer.setupMiddlewares $#devserversetupmiddlewares$
 
 `function (middlewares, devServer)`
 
 <Badge text="v4.7.0+" />
 
-Provides the ability to execute a custom function and apply custom middleware(s).
+提供执行自定义函数和应用自定义中间件的能力。
 
 **webpack.config.js**
 
@@ -1617,22 +1581,22 @@ module.exports = {
         response.send('setup-middlewares option GET');
       });
 
-      // Use the `unshift` method if you want to run a middleware before all other middlewares
-      // or when you are migrating from the `onBeforeSetupMiddleware` option
+      // 如果你想在所有其他中间件之前运行一个中间件或者当你从 `onBeforeSetupMiddleware` 配置项迁移时，
+      // 可以使用 `unshift` 方法
       middlewares.unshift({
         name: 'first-in-array',
-        // `path` is optional
+        // `path` 是可选的
         path: '/foo/path',
         middleware: (req, res) => {
           res.send('Foo!');
         },
       });
 
-      // Use the `push` method if you want to run a middleware after all other middlewares
-      // or when you are migrating from the `onAfterSetupMiddleware` option
+      // 如果你想在所有其他中间件之后运行一个中间件或者当你从 `onAfterSetupMiddleware` 配置项迁移时，
+      // 可以使用 `push` 方法
       middlewares.push({
         name: 'hello-world-test-one',
-        // `path` is optional
+        // `path` 是可选的
         path: '/foo/bar',
         middleware: (req, res) => {
           res.send('Foo Bar!');
@@ -1649,11 +1613,11 @@ module.exports = {
 };
 ```
 
-## devServer.static
+## devServer.static $#devserverstatic$
 
 `boolean` `string` `object` `[string, object]`
 
-This option allows configuring options for serving static files from the directory (by default 'public' directory). To disable set it to `false`:
+该配置项允许配置从目录提供静态文件的选项（默认是 'public' 文件夹）。将其设置为 `false` 以禁用：
 
 **webpack.config.js**
 
@@ -1666,19 +1630,19 @@ module.exports = {
 };
 ```
 
-Usage via CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --static
 ```
 
-To disable:
+禁用该功能：
 
 ```bash
 npx webpack serve --no-static
 ```
 
-To watch a single directory:
+监听单个目录：
 
 **webpack.config.js**
 
@@ -1691,13 +1655,13 @@ module.exports = {
 };
 ```
 
-Usage via CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --static assets
 ```
 
-To watch multiple static directories:
+监听多个静态资源目录：
 
 **webpack.config.js**
 
@@ -1710,17 +1674,17 @@ module.exports = {
 };
 ```
 
-Usage via CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --static assets --static css
 ```
 
-### directory
+### directory $#directory$
 
 `string = path.join(process.cwd(), 'public')`
 
-Tell the server where to serve the content from. This is only necessary if you want to serve static files. [`static.publicPath`](#publicpath) will be used to determine where the bundles should be served from and takes precedence.
+告诉服务器从哪里提供内容。只有在你希望提供静态文件时才需要这样做。[`static.publicPath`](#publicpath) 将会被用来决定应该从哪里提供 bundle，并具有优先级。
 
 **webpack.config.js**
 
@@ -1737,7 +1701,7 @@ module.exports = {
 };
 ```
 
-Provide an array of objects in case you have multiple static folders:
+提供一个对象数组，以防你有多个静态资源文件夹：
 
 **webpack.config.js**
 
@@ -1759,13 +1723,13 @@ module.exports = {
 };
 ```
 
-T> It is recommended to use an absolute path.
+T> 推荐使用绝对路径。
 
 ### staticOptions
 
 `object`
 
-It is possible to configure advanced options for serving static files from [`static.directory`](#directory). See the [Express documentation](http://expressjs.com/en/4x/api.html#express.static) for the possible options.
+可以配置从 [`static.directory`](#directory) 提供静态文件的高级选项。关于可用配置项可以插件 [Express 文档](http://expressjs.com/en/4x/api.html#express.static)。
 
 **webpack.config.js**
 
@@ -1782,11 +1746,11 @@ module.exports = {
 };
 ```
 
-### publicPath
+### publicPath $#publicpath$
 
 `string = '/'` `[string]`
 
-Tell the server at which URL to serve [`static.directory`](#directory) content. For example to serve a file `assets/manifest.json` at `/serve-public-path-url/manifest.json`, your configurations should be as following:
+告诉服务器在哪个 URL 上提供 [`static.directory`](#directory) 的内容。例如为在 `/serve-public-path-url/manifest.json` 中的 `assets/manifest.json` 提供服务，你的配置项应该像下面这样：
 
 **webpack.config.js**
 
@@ -1804,7 +1768,7 @@ module.exports = {
 };
 ```
 
-Provide an array of objects in case you have multiple static folders:
+提供一个对象数组，以防你有多个静态文件夹：
 
 **webpack.config.js**
 
@@ -1828,13 +1792,13 @@ module.exports = {
 };
 ```
 
-### serveIndex
+### serveIndex $#serveindex$
 
 `boolean` `object = { icons: true }`
 
-Tell dev-server to use [`serveIndex`](https://github.com/expressjs/serve-index) middleware when enabled.
+告诉开发服务器启用后使用 [`serveIndex`](https://github.com/expressjs/serve-index) 中间件。
 
-[`serveIndex`](https://github.com/expressjs/serve-index) middleware generates directory listings on viewing directories that don't have an `index.html` file.
+[`serveIndex`](https://github.com/expressjs/serve-index) 中间件会在查看没有 index.html 文件的目录时生成目录列表。
 
 **webpack.config.js**
 
@@ -1852,23 +1816,23 @@ module.exports = {
 };
 ```
 
-Usage via CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --static-serve-index
 ```
 
-To disable:
+禁用该功能：
 
 ```bash
 npx webpack serve --no-static-serve-index
 ```
 
-### watch
+### watch $#watch$
 
 `boolean` `object`
 
-Tell dev-server to watch the files served by the [`static.directory`](#directory) option. It is enabled by default, and file changes will trigger a full page reload. This can be disabled by setting the `watch` option to `false`.
+通过 [`static.directory`](#directory) 配置项告诉 dev-server 监听文件。默认启用，文件更改将触发整个页面重新加载。可以通过将 `watch` 设置为 `false` 禁用。
 
 **webpack.config.js**
 
@@ -1886,19 +1850,19 @@ module.exports = {
 };
 ```
 
-Usage via CLI:
+通过 CLI 使用：
 
 ```bash
 npx webpack serve --static-watch
 ```
 
-To disable:
+禁用该功能：
 
 ```bash
 npx webpack serve --no-static-watch
 ```
 
-It is possible to configure advanced options for watching static files from [`static.directory`](#directory). See the [`chokidar`](https://github.com/paulmillr/chokidar) documentation for the possible options.
+可以配置高级选项以监听 [`static.directory`](#directory) 中的静态文件。关于可用选项可以查看 [`chokidar`](https://github.com/paulmillr/chokidar) 文档。
 
 **webpack.config.js**
 
@@ -1919,11 +1883,11 @@ module.exports = {
 };
 ```
 
-## devServer.watchFiles
+## devServer.watchFiles $#devserverwatchfiles$
 
 `string` `object` `[string, object]`
 
-This option allows you to configure a list of globs/directories/files to watch for file changes. For example:
+该配置项允许你配置 globs/directories/files 来监听文件变化。例如：
 
 **webpack.config.js**
 
@@ -1936,7 +1900,7 @@ module.exports = {
 };
 ```
 
-It is possible to configure advanced options for watching files. See the [`chokidar`](https://github.com/paulmillr/chokidar) documentation for the possible options.
+可以配置高级选项来监听文件。关于可用选项可以查看 [`chokidar`](https://github.com/paulmillr/chokidar) 文档。
 
 **webpack.config.js**
 
@@ -1954,13 +1918,13 @@ module.exports = {
 };
 ```
 
-## devServer.webSocketServer
+## devServer.webSocketServer $#devserverwebsocketserver$
 
 `false | 'sockjs' | 'ws'` `string` `function` `object`
 
-This option allows us either to choose the current web-socket server or to provide custom web-socket server implementation.
+该配置项允许我们选择当前的 web-socket 服务器或者提供自定义的 web-socket 服务器实现。
 
-The current default mode is `'ws'`. This mode uses [`ws`](https://www.npmjs.com/package/ws) as a server, and native WebSockets on the client.
+当前默认模式为 `'ws'`。该模式使用 [`ws`](https://www.npmjs.com/package/ws) 作为服务器，客户端中的 WebSockets。
 
 **webpack.config.js**
 
@@ -1973,9 +1937,9 @@ module.exports = {
 };
 ```
 
-To create a custom server implementation, create a class that extends [`BaseServer`](https://github.com/webpack/webpack-dev-server/blob/master/lib/servers/BaseServer.js).
+为了创建一个自定义服务端实现，可以创建一个拓展 [`BaseServer`](https://github.com/webpack/webpack-dev-server/blob/master/lib/servers/BaseServer.js) 的类。
 
-Using path to `CustomServer.js`, a custom WebSocket server implementation, along with the compatible `'ws'` client:
+使用 `CustomServer.js` 导出的类实现自定义 WebSocket 客户端并兼容`ws`服务端：
 
 **webpack.config.js**
 
@@ -1991,7 +1955,7 @@ module.exports = {
 };
 ```
 
-Using custom, compatible WebSocket client and server implementations:
+使用自定义且兼容的 WebSocket 客户端以及服务端实现：
 
 **webpack.config.js**
 

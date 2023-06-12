@@ -200,7 +200,6 @@ module.exports = {
      path: path.resolve(__dirname, 'dist'),
      filename: 'webpack-numbers.js',
 -    library: 'webpackNumbers',
-+    globalObject: 'this',
 +    library: {
 +      name: 'webpackNumbers',
 +      type: 'umd',
