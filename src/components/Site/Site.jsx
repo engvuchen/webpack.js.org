@@ -88,16 +88,27 @@ function Site(props) {
       array.splice(anchorTitleIndex + 1, 1);
     }
 
+    const map = new Map([
+      ['concepts', '概念'],
+      ['configuration', '配置'],
+      ['guides', '指南'],
+      ['loaders', 'loader'],
+      ['migrate', '迁移'],
+      ['plugins', 'plugin'],
+    ]);
     return array
-      .map(({ title, name, url, group, sort, anchors, children }) => ({
-        title: title || name,
-        content: title || name,
-        url,
-        group,
-        sort,
-        anchors,
-        children: children ? _strip(children) : [],
-      }))
+      .map(({ title, name, url, group, sort, anchors, children }) => {
+        const cnTitle = map.get(title) || map.get(name);
+        return {
+          title: cnTitle || title || name,
+          content: cnTitle || title || name,
+          url,
+          group,
+          sort,
+          anchors,
+          children: children ? _strip(children) : [],
+        };
+      })
       .filter(
         (page) =>
           page.title !== 'printable.mdx' && !page.content.includes('Printable')
@@ -156,7 +167,7 @@ function Site(props) {
 
   const description =
     getPageDescription(Content, location.pathname) ||
-    'webpack is a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser, yet it is also capable of transforming, bundling, or packaging just about any resource or asset.';
+    'webpack 是一个模块打包器。它的主要目标是将 JavaScript 文件打包在一起，打包后的文件用于在浏览器中使用，但它也能够胜任转换（transform）、打包（bundle）或包裹（package）任何资源(resource or asset)。';
 
   function isPrintPage(url) {
     return url.includes('/printable');
@@ -181,7 +192,7 @@ function Site(props) {
     <MDXProvider components={mdxComponents}>
       <div className="site">
         <Helmet>
-          <html lang="en" />
+          <html lang="zh-cmn-Hans" />
           <meta charset="utf-8" />
           <meta name="theme-color" content="#2B3A42" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -206,13 +217,17 @@ function Site(props) {
           <meta property="twitter:site" content="@webpack" />
           <meta property="twitter:creator" content="@webpack" />
           <meta property="twitter:domain" content="https://webpack.js.org/" />
+          <meta
+            name="keywords"
+            content="webpack5, webpack, webpack 中文文档, webpack 官方中文, webpack 5 官方中文, 印记中文, docschina, docschina.org, webpack.docschina.org, doc.react-china.org, nodejs.cn, vue.docschina.org, babel.docschina.org, parceljs.docschina.org, rollup.docschina.org, koajs.docschina.org"
+          ></meta>
           <link rel="icon" type="image/x-icon" href={Favicon} />
           {process.env.NODE_ENV === 'production' && (
             <link rel="manifest" href="/manifest.json" />
           )}
           <link
             rel="canonical"
-            href={`https://webpack.js.org${enforceTrailingSlash(
+            href={`https://webpack.docschina.org${enforceTrailingSlash(
               location.pathname
             )}`}
           />
@@ -234,7 +249,7 @@ function Site(props) {
             toggleSidebar={_toggleSidebar}
             links={[
               {
-                content: 'Documentation',
+                content: '中文文档',
                 url: '/concepts/',
                 isactive: (_, location) => {
                   return /^\/(api|concepts|configuration|guides|loaders|migrate|plugins)/.test(
@@ -247,8 +262,10 @@ function Site(props) {
                   )
                 ),
               },
-              { content: 'Contribute', url: '/contribute/' },
-              { content: 'Blog', url: '/blog/' },
+              { content: '参与贡献', url: '/contribute/' },
+              { content: '投票', url: 'https://webpack.js.org/vote/' },
+              { content: '博客', url: '/blog/' },
+              { content: '印记中文', url: 'https://docschina.org' },
             ]}
           />
         </div>
