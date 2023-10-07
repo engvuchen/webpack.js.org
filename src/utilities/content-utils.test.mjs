@@ -48,7 +48,7 @@ describe('getPageTitle', () => {
 
   it('should return title for printable page', () => {
     const title = getPageTitle(content, '/printable/');
-    expect(title).toBe('Combined printable page | webpack');
+    expect(title).toBe('Combined printable page | webpack 中文文档');
   });
 
   it('should return title for get-started', () => {
