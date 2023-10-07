@@ -17,7 +17,7 @@ const content = JSON.parse(
 describe('findInContent', () => {
   it('should find home page', () => {
     const page = findInContent(content, (item) => item.url === '/');
-    expect(page.title).toBe('webpack');
+    expect(page.title).toBe('webpack 中文文档');
   });
 });
 
@@ -35,7 +35,7 @@ describe('getPageDescription', () => {
   it('should return description for get-started', () => {
     const description = getPageDescription(content, '/guides/getting-started/');
     expect(description).toBe(
-      'Learn how to bundle a JavaScript application with webpack 5.'
+      '学习如何使用 webpack5 打包 JavaScript 应用'
     );
   });
 });
@@ -43,7 +43,7 @@ describe('getPageDescription', () => {
 describe('getPageTitle', () => {
   it('should return default title for non-exist page', () => {
     const title = getPageTitle(content, '/xzy');
-    expect(title).toBe('webpack');
+    expect(title).toBe('webpack 中文文档');
   });
 
   it('should return title for printable page', () => {
