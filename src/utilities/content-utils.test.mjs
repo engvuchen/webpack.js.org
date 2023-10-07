@@ -53,6 +53,6 @@ describe('getPageTitle', () => {
 
   it('should return title for get-started', () => {
     const title = getPageTitle(content, '/guides/getting-started/');
-    expect(title).toBe('Getting Started | webpack');
+    expect(title).toBe('Getting Started | webpack 中文文档');
   });
 });
