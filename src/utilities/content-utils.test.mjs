@@ -17,7 +17,7 @@ const content = JSON.parse(
 describe('findInContent', () => {
   it('should find home page', () => {
     const page = findInContent(content, (item) => item.url === '/');
-    expect(page.title).toBe('webpack 中文文档');
+    expect(page.title).toBe('webpack');
   });
 });
 
