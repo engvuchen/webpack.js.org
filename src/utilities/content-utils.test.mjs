@@ -35,7 +35,7 @@ describe('getPageDescription', () => {
   it('should return description for get-started', () => {
     const description = getPageDescription(content, '/guides/getting-started/');
     expect(description).toBe(
-      '学习如何使用 webpack5 打包 JavaScript 应用'
+      'Learn how to bundle a JavaScript application with webpack 5.'
     );
   });
 });
