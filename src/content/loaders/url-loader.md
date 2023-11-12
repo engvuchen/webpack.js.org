@@ -1,3 +1,7 @@
+---
+title: url-loader
+---
+
 <div align="center">
   <a href="https://github.com/webpack/webpack">
     <img width="200" height="200" src="https://webpack.js.org/assets/icon-square-big.svg">
@@ -10,8 +14,6 @@
 [![tests][tests]][tests-url]
 [![chat][chat]][chat-url]
 [![size][size]][size-url]
-
-# url-loader
 
 一个将文件转换成 base64 URIs 的 webpack loader。
 
